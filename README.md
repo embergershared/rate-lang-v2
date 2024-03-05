@@ -40,8 +40,38 @@ $env:SPEECH_SERVICE_REGION = "<Azure Speech Location/Region value>"
 flask run
 ```
 
+## Use
+
 - Go go the local website with (defaults values here):
 
-[http://127.0.0.1:5000](http://127.0.0.1:5000)
+  - To get some pronunciation: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
-[http://127.0.0.1:5000/readalong](http://127.0.0.1:5000/readalong)
+    - Either enter text you want to evaluate your pronunciation with
+    - Or, Click `Get Tongue Twister`, it populates with text,
+
+    - Click `Learn Pronunciation` to hear the way it is said,
+
+    - Click `Record`, Allow access to your Microphone for the browser,
+
+    - Click `Stop` when done recording the sentence,
+
+    - Wait for the evaluation report
+    ![Evaluation result](/img/2024-03-05%20162025.png)
+
+  - To record your pronunciation of sentences you read: [http://127.0.0.1:5000/readalong](http://127.0.0.1:5000/readalong)
+
+## To relaunch
+
+Execute these commands:
+
+- `cd` or `Set-Location` in the folder `rate-lang-v2\src\BrowserJS`
+
+- Execute:
+
+```cmd
+$env:FLASK_APP = "application.py"
+$env:FLASK_ENV = "development"
+$env:SPEECH_SERVICE_SUBSCRIPTION_KEY = "<Azure Speech KEY 1 value>"
+$env:SPEECH_SERVICE_REGION = "<Azure Speech Location/Region value>"
+flask run
+```
