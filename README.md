@@ -1,77 +1,32 @@
-# Rate Language version 2 Proof of Concept
+![image](https://user-images.githubusercontent.com/31500515/112596487-e4513100-8e31-11eb-9cd1-d08c93887409.png)
+This Pronunciation Assessment Browser sample code allows you to test the Azure Speech Service Pronunciation Assessment feature in your own browser. You can simply enter your reference text or choose a random Tongue Twister and click on the record button to test your voice.
+![image](https://user-images.githubusercontent.com/31500515/112596145-6c830680-8e31-11eb-9d88-26eca37df10e.png)
+You can also play the Learn Pronunciation button to hear back the correct Pronunciation for the text.
 
-## Overview
+Note: This is a Python Flask app and JavaScript based sample. It uses the en-US locale for Pronunciation Assessment and the en-GB LibbyNeural voice for TTS playback. You can change the TTS voice by editing the code.
 
-This application uses Azure Cognitive Speech services to assess the pronunciation of a person.
+Bonus - you can also test the read along experience on localhost/readalong
+![image](https://user-images.githubusercontent.com/31500515/112596985-8e30bd80-8e32-11eb-9fb2-385105e7ab96.png)
 
-The feature is explained in Speech Studio [here](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/pronunciation-assessment-tool?tabs=display)
+Instructions on how to run this sample:
 
-The sample repo with all the code is [here](https://github.com/Azure-Samples/Cognitive-Speech-TTS/tree/master/PronunciationAssessment)
+To run on local (in terminal):
 
-To facilitate the demonstration, we use the `BrowserJS` version, for which we tuned the code and content.
+1. git clone the code
+2. open the application.py file and enter your subscription_key and region values for your Azure Speech Service resource.
+3. Download and extract the [Speech SDK for JavaScript](https://aka.ms/csspeech/jsbrowserpackage)  microsoft.cognitiveservices.speech.sdk.bundle.js file, and place it in a folder accessible to your HTML file - static folder
 
-## Requirements
+In cmd line, type the following commands:
 
-`python`
-`pip`
+1. cd BrowserJS
+   \\activate your virtualenv\\
+2. pip install -r requirements.txt
+3. set FLASK_APP=application.py  
+4. set FLASK_ENV=development   
+5. flask run
 
-## Installation
+Note: For Ubuntu, change `set` to `export`
 
-Here are the steps to follow on a Windows computer to setup, use, debug and code locally:
+3. `export FLASK_APP=application.py`
+4. `export FLASK_ENV=development`
 
-- Clone the repository locally `git clone https://github.com/embergershared/rate-lang-v2.git`,
-
-- Create or use an `Azure Speech Service` instance,
-
-- In the blade `Resource Management` / `Keys and Endpoint`, note the `Key 1` (or Key 2) and `Location/Region` values (we'll need them later),
-
-- Launch a terminal **as Admin**,
-
-- `cd` or `Set-Location` in the folder `rate-lang-v2\src\BrowserJS`
-
-- Execute:
-
-```cmd
-pip install -r requirements.txt
-$env:FLASK_APP = "application.py"
-$env:FLASK_ENV = "development"
-$env:SPEECH_SERVICE_SUBSCRIPTION_KEY = "<Azure Speech KEY 1 value>"
-$env:SPEECH_SERVICE_REGION = "<Azure Speech Location/Region value>"
-flask run
-```
-
-## Use
-
-- Go go the local website with (defaults values here):
-
-  - To get some pronunciation: [http://127.0.0.1:5000](http://127.0.0.1:5000)
-
-    - Either enter text you want to evaluate your pronunciation with
-    - Or, Click `Get Tongue Twister`, it populates with text,
-
-    - Click `Learn Pronunciation` to hear the way it is said,
-
-    - Click `Record`, Allow access to your Microphone for the browser,
-
-    - Click `Stop` when done recording the sentence,
-
-    - Wait for the evaluation report
-    ![Evaluation result](/img/2024-03-05%20162025.png)
-
-  - To record your pronunciation of sentences you read: [http://127.0.0.1:5000/readalong](http://127.0.0.1:5000/readalong)
-
-## To relaunch
-
-Execute these commands:
-
-- `cd` or `Set-Location` in the folder `rate-lang-v2\src\BrowserJS`
-
-- Execute:
-
-```cmd
-$env:FLASK_APP = "application.py"
-$env:FLASK_ENV = "development"
-$env:SPEECH_SERVICE_SUBSCRIPTION_KEY = "<Azure Speech KEY 1 value>"
-$env:SPEECH_SERVICE_REGION = "<Azure Speech Location/Region value>"
-flask run
-```
