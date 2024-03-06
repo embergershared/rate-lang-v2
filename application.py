@@ -17,7 +17,26 @@ region = os.environ["SPEECH_SERVICE_REGION"]
 language = "en-US"
 voice = "Microsoft Server Speech Text to Speech Voice (en-US, JennyNeural)"
 
+tonguetwisters = [
+        "How much wood would a woodchuck chuck if a woodchuck could chuck wood?",
+        "She sells seashells by the seashore.",
+        "We surely shall see the sun shine soon.",
+        "Lesser leather never weathered wetter weather better.",
+        "I scream, you scream, we all scream for ice cream.",
+        "Susie works in a shoeshine shop. Where she shines she sits, and where she sits she shines.",
+        "Six sticky skeletons. Six sticky skeletons. Six sticky skeletons.",
+        "Black back bat. Black back bat. Black back bat.",
+        "She sees cheese. She sees cheese. She sees cheese.",
+        "Two tried and true tridents. Two tried and true tridents. Two tried and true tridents.",
+        "Thin sticks, thick bricks. Thin sticks, thick bricks. Thin sticks, thick bricks.",
+        "Truly rural. Truly rural. Truly rural.",
+        "Black background, brown background",
+        "Blue blood, bad blood. Blue blood, bad blood. Blue blood, bad blood.",
+        "Red lorry, yellow lorry. Red lorry, yellow lorry. Red lorry, yellow lorry.",
+        "I slit the sheet, the sheet I slit, and on the slitted sheet I sit",
+    ]
 
+app.config['TEMPLATES_AUTO_RELOAD'] = True 
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -41,28 +60,12 @@ def gettoken():
 
 @app.route("/gettonguetwister", methods=["POST"])
 def gettonguetwister():
-    tonguetwisters = [
-        "How much wood would a woodchuck chuck if a woodchuck could chuck wood?",
-        "She sells seashells by the seashore.",
-        "We surely shall see the sun shine soon.",
-        "Lesser leather never weathered wetter weather better.",
-        "I scream, you scream, we all scream for ice cream.",
-        "Susie works in a shoeshine shop. Where she shines she sits, and where she sits she shines.",
-        "Six sticky skeletons. Six sticky skeletons. Six sticky skeletons.",
-        "Black back bat. Black back bat. Black back bat.",
-        "She sees cheese. She sees cheese. She sees cheese.",
-        "Two tried and true tridents. Two tried and true tridents. Two tried and true tridents.",
-        "Thin sticks, thick bricks. Thin sticks, thick bricks. Thin sticks, thick bricks.",
-        "Truly rural. Truly rural. Truly rural.",
-        "Black background, brown background",
-        "Blue blood, bad blood. Blue blood, bad blood. Blue blood, bad blood.",
-        "Red lorry, yellow lorry. Red lorry, yellow lorry. Red lorry, yellow lorry.",
-        "I slit the sheet, the sheet I slit, and on the slitted sheet I sit",
-    ]
-
     return jsonify({"tt": random.choice(tonguetwisters)})
 
-
+@app.route("/gettonguetwisters", methods=["POST"])
+def gettonguetwisters():
+    return jsonify(tonguetwisters)
+    
 @app.route("/getstory", methods=["POST"])
 def getstory():
     id = int(request.form.get("id"))

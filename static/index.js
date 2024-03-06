@@ -7,8 +7,6 @@
     var wordsinserted = document.getElementById('wordsinserted');
     var omittedwords = "";
     var insertedwords = "";
-    wordsinserted.style.display = "none";
-    document.getElementById("wih").style.display = "none";
 
     var wordrow = document.getElementById('wordrow');
     var phonemerow = document.getElementById('phonemerow');
@@ -16,10 +14,13 @@
 
     var reftext = document.getElementById('reftext');
     var formcontainer = document.getElementById('formcontainer');
-    var ttbutton = document.getElementById('randomtt');
+    // var ttbutton = document.getElementById('randomtt');
     var hbutton = document.getElementById('buttonhear');
     var recordingsList = document.getElementById('recordingsList');
     var ttsList = document.getElementById('ttsList');
+var textOptionList = document.getElementById('text-select');
+var recordButton = document.getElementById('buttonmic');
+    var spinner = document.getElementById('spinner');
     var lastgettstext;
     var objectUrlMain;
     var wordaudiourls = new Array;
@@ -46,14 +47,33 @@
     var t0 = 0;
     var t1;
     var at;
-
-    window.onload = () => {
+    
+    window.onload = async () => {
         if(tflag){
             tflag = gettoken();
             tflag = false;
         }
+
+        let ttsResponse = await fetch('/gettonguetwisters', { method: 'POST'});
+        let ttsData = await ttsResponse.json();
+        ttsData.forEach(element => {
+            const previewText = element.substring(0, 20) + '...';
+            textOptionList.innerHTML += `<option value="${element}">${previewText}</option>`;
+        });
+
+        if (localStorage.getItem('reftext')) {
+            textOptionList.value = localStorage.getItem('reftext');
+            localStorage.removeItem('reftext');
+        }
+
+        textOptionList.dispatchEvent(new Event('change'));
         
-    };
+};
+textOptionList.onchange = () => {
+    reftextval = textOptionList.value;
+    reftext.value = reftextval;
+    reftext.innerText = reftextval;
+}
     
     function gettoken(){
         var request = new XMLHttpRequest();
@@ -160,69 +180,7 @@
         h.innerHTML = "You must allow your microphone.";
         console.log(error);
     }
-
-    //function for onclick of hear pronunciation button
-    hbutton.onclick = function () {
-        reftextval = reftext.value;
-        
-        if(reftextval != lastgettstext){
-            document.getElementById("ttsloader").style.display = "block";
-
-            var request = new XMLHttpRequest();
-            request.open('POST', '/gettts', true);
-            request.responseType = "blob";
-
-            // Callback function for when request completes
-            request.onload = () => {
-                var blobpronun = request.response;
-                var offsets = request.getResponseHeader("offsets");
-                offsetsarr = offsets.substring(1,offsets.length - 1).replace(/ /g, "").split(',').map(Number);;
-
-                objectUrlMain = URL.createObjectURL(blobpronun);
-
-                var au = document.createElement('audio');
-                var li = document.createElement('p');
-            
-                //add controls to the <audio> element
-                au.controls = true;
-                au.autoplay = true;
-                au.id = "ttsaudio"
-                au.src = objectUrlMain;
-            
-                //add the new audio element to li
-                li.appendChild(au);
-                    
-                //add the li element to the ol
-                
-                if(ttsList.hasChildNodes()){
-                    ttsList.lastChild.remove();
-                }
-                
-                ttsList.appendChild(li);
-
-                document.getElementById("ttsloader").style.display = "none";
-            }
-            const dat = new FormData();
-            dat.append("reftext",reftextval);    
-            
-            //send request
-            request.send(dat);
-
-            lastgettstext = reftextval;
-
-            wordlist = reftextval.split(" ");
-            for (var i = 0; i < wordlist.length; i++) {
-                getttsforword(wordlist[i]);
-            }
-            
-        }
-        else{
-            console.log("TTS Audio for given text already exists. You may change ref text");
-        }
-
-        return false;
-    }
-
+    
     function getttsforword(word){
         var request = new XMLHttpRequest();
         request.open('POST', '/getttsforword', true);
@@ -241,50 +199,31 @@
         request.send(dat);
     }
 
-    //function for onclick of get tongue twister button
-    ttbutton.onclick = function () {
-        var request = new XMLHttpRequest();
-        request.open('POST', '/gettonguetwister', true);
-
-        // Callback function for when request completes
-        request.onload = () => {
-            // Extract JSON data from request
-            const data = JSON.parse(request.responseText);
-            reftextval = data.tt;
-            reftext.value = reftextval;
-            reftext.innerText = reftextval;
-
-        }
-        
-        //send request
-        request.send();
-
-        return false;
-    }
-
     //function for handling main button clicks
-    document.getElementById('buttonmic').onclick = function () {
-       
+    recordButton.onclick = () =>{
         if (reftext.value.length == 0){
             alert("Reference Text cannot be empty!");
         }
         else{
             if (stop) {
+                localStorage.setItem('reftext', reftext.value);
                 window.location.reload();
             }
             else if (start) {
 
                 start = false;
                 stop = true;
-                this.innerHTML = "<span class='fa fa-refresh'></span>Refresh";
-                this.className = "green-button";
+                recordButton.innerHTML = "Retry";
+                recordButton.className = "bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded";
                 rec.stop();
+                document.getElementById('results').style.display = "block";
     
                 //stop microphone access
                 gumStream.getAudioTracks()[0].stop();
     
                 //create the wav blob and pass it on to createDownloadLink
                 rec.exportWAV(createDownloadLink);
+                spinner.style.display = "block";
             }
             else {
                 if (!permission) {
@@ -296,12 +235,11 @@
                 start = true;
                 reftext.readonly = true;
                 reftext.disabled = true;
-                ttbutton.disabled = true;
-                ttbutton.className = "btn";
+
                 reftextval = reftext.value;
     
-                this.innerHTML = "<span class='fa fa-stop'></span>Stop";
-                this.className = "red-button";
+                recordButton.innerHTML = "Stop";
+                recordButton.className = "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded";
             }
         }
         };
@@ -388,17 +326,12 @@
         fillDetails(data.Words);
         wordsomitted.innerText = omittedwords;
         if(insertedwords != ""){
-            document.getElementById("wih").style.display = "block";
-            wordsinserted.style.display = "block";
             wordsinserted.innerText = insertedwords;
         }
     }
 
     function createDownloadLink(blob) {
-
-        document.getElementById("recordloader").style.display = "block";
         
-        document.getElementById("footeralert").style.display = "none";
         var url = URL.createObjectURL(blob);
         var au = document.createElement('audio');
         var li = document.createElement('p');
@@ -428,13 +361,14 @@
             
             if(data.RecognitionStatus == "Success") {
                 fillData(data.NBest[0]);
-                document.getElementById("recordloader").style.display = "none";
                 document.getElementById("metrics").style.display = "block";
+                spinner.style.display = "none";
             }
             else{
                 alert("Did not catch audio properly! Please try again.");
                 console.log("Server returned: Error");
                 console.log(data.RecognitionStatus);
+                spinner.style.display = "none";
             }
         }
         // Add data to send with request

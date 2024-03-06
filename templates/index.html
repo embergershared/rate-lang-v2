@@ -7,83 +7,75 @@
     <title>Pronunciation Assessment</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>  
-    
-    <div class="container" id="ttscont">
-        <div class="button-container">
-            <button id="buttonhear" class="h-button">
-                <span class="fas fa-headphones"></span>Learn Pronunciation</button>
-        </div> 
-
-        <div id="ttsList"></div>
-        <div class="container" id="ttsloader">
-            <div id="loader"></div>
-        </div> 
-    </div>
-
-    <div class=container id="formcontainer">
-        <form id="reftextform">
-            <textarea id = "reftext" rows = "3" cols = "80" name = "reftext" maxlength="160" autofocus placeholder="Enter Reference Text here..."></textarea>
-        </form>
-        <br>
-    </div>
-
-    <div class="button-container">
-        <button id="randomtt" class="blue-button">
-            <span class="fa fa-random"></span>Get Tongue Twister</button>
-        <button id="buttonmic" class="green-button">
-            <span class="fa fa-microphone"></span>Record</button>
-    </div>
-
-    <div class="container" id="recordcont">
-        <div id="recordingsList"></div>
-
-        <div class="container" id="recordloader">
-            <div id="loader"></div>
+<body class="flex flex-col h-screen">  
+    <nav class="flex bg-gray-200 p-4 gap-16">
+        <img class="max-h-10" src="https://www.costacruises.com/content/dam/costa/costa-asset/Logos/logo.svg" alt="Costa Cruises" class="logo">
+        <div class="text-3xl">
+            Pronunciation Assessment
         </div>
-        
-        <div id="metrics" class="animate-bottom">
-            <div class=container>
-                <div id="summarytable">
-                    <table>
-                        <tr>
-                            <th>Accuracy Score</th>
-                            <th>Fluency Score</th>
-                            <th>Completeness Score</th>
-                            <th>Pronunciation Score</th>
-                            <th id="woh">Words Omitted</th>
-                            <th id="wih">Extra Words Spoken</th>
-                        </tr>
-                        <tr>
-                            <td id="accuracyscore"></td>
-                            <td id="fluencyscore"></td>
-                            <td id="completenessscore"></td>
-                            <td id="pronscore"></td>
-                            <td id="wordsomitted"></td>
-                            <td id="wordsinserted"></td>
-                        </tr>
-                    </table>
+    </nav>
+
+    <main class="flex flex-col items-center gap-4 bg-center flex-grow">
+        <select id="text-select" class="border p-2 mt-4">
+        </select>
+        <form id="reftextform">
+            <textarea class="p-2 text-xl" id = "reftext" rows = "3" cols = "80" name = "reftext" maxlength="160" disabled></textarea>
+        </form>
+
+            <button id="buttonmic" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Record
+            </button>
+
+            <hr id="results" class="border-1 border-gray-700 w-4/5 my-4 hidden"/>
+            
+            <div id="spinner" class="hidden">
+                <div class="flex flex-col items-center gap-4">
+                    <p class="text-2xl">Processing...</p>
+                    <div class="border-t-transparent border-solid animate-spin  rounded-full border-blue-400 border-8 h-24 w-24"></div>
                 </div>
             </div>
             
-            <div class="container">
-                <div id="detailedtable">
-                    <table>
-                        <tr id="wordrow"></tr>
-                        <tr id ="phonemerow"></tr>
-                        <tr id ="scorerow"></tr>
-                    </table>
+            <div id="metrics" class="hidden">
+                <div class="flex flex-col gap-4">
+                    <div id="summarytable">
+                        <table class="text-center table-auto w-full">
+                            <tr>
+                                <th>Accuracy</th>
+                                <th>Fluency</th>
+                                <th>Completeness</th>
+                                <th>Pronunciation</th>
+                                <th id="woh">Omitted Words</th>
+                                <th id="wih">Extra Words</th>
+                            </tr>
+                            <tr>
+                                <td id="accuracyscore"></td>
+                                <td id="fluencyscore"></td>
+                                <td id="completenessscore"></td>
+                                <td id="pronscore"></td>
+                                <td id="wordsomitted"></td>
+                                <td id="wordsinserted"></td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div id="detailedtable" class="overflow-x-auto">
+                        <table>
+                            <tr id="wordrow"></tr>
+                            <tr id ="phonemerow"></tr>
+                            <tr id ="scorerow"></tr>
+                        </table>
+                    </div>
                 </div>
+
             </div>
 
-        </div>
+            <div id="recordingsList"></div>
 
-    </div>
-    
-    <footer id=footeralert>Please allow the use of your microphone.</footer>
-    
+    </main>
+
     <script src="{{ url_for('static', filename='index.js') }}"></script>
     <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
 
