@@ -18,8 +18,17 @@
         </div>
     </nav>
 
-    <main class="flex flex-col items-center gap-4 bg-center flex-grow">
-        <select id="text-select" class="border p-2 mt-4">
+    <main class="flex flex-col items-center gap-4 bg-center flex-grow pt-4">
+        <div class="text-gray-500">
+            <ol class="list-decimal list-inside">
+                <li>Choose a text from the dropdown list</li>
+                <li>Click on the record button to start recording</li>
+                <li>Read the text displayed in the text box</li>
+                <li>Click on the stop button to stop recording</li>
+                <li>Wait for the results to be displayed</li>
+            </ol>
+        </div>
+        <select id="text-select" class="border p-2">
         </select>
         <form id="reftextform">
             <textarea class="p-2 text-xl" id = "reftext" rows = "3" cols = "80" name = "reftext" maxlength="160" disabled></textarea>
@@ -62,7 +71,7 @@
                     </div>
                 
                     <div id="detailedtable" class="overflow-x-auto">
-                        <table>
+                        <table class="overflow-x-auto">
                             <tr id="wordrow"></tr>
                             <tr id ="phonemerow"></tr>
                             <tr id ="scorerow"></tr>
