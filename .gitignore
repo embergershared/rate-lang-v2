@@ -303,3 +303,12 @@ terraform.rc
 # End of https://www.toptal.com/developers/gitignore/api/python,flask,terraform
 terraform/backend.tf
 terraform/.terraform.lock.hcl
+src/BrowserJS/application.py
+src/BrowserJS/README.md
+src/BrowserJS/requirements.txt
+src/BrowserJS/static/index.js
+src/BrowserJS/static/readalong.css
+src/BrowserJS/static/readalong.js
+src/BrowserJS/static/style.css
+src/BrowserJS/templates/index.html
+src/BrowserJS/templates/readalong.html

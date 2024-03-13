@@ -116,7 +116,6 @@ textOptionList.onchange = () => {
         };
         
         audio.addEventListener("timeupdate", pausing_function);
-       
     }
 
     function playwordind(word){
