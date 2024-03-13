@@ -36,7 +36,7 @@ tonguetwisters = [
         "I slit the sheet, the sheet I slit, and on the slitted sheet I sit",
     ]
 
-app.config['TEMPLATES_AUTO_RELOAD'] = True 
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 @app.route("/", methods=["GET"])
 def index():
@@ -63,7 +63,7 @@ def gettonguetwister():
 @app.route("/gettonguetwisters", methods=["POST"])
 def gettonguetwisters():
     return jsonify(tonguetwisters)
-    
+
 @app.route("/getstory", methods=["POST"])
 def getstory():
     id = int(request.form.get("id"))
