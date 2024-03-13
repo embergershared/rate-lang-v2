@@ -37,15 +37,14 @@ tonguetwisters = [
     ]
 
 app.config['TEMPLATES_AUTO_RELOAD'] = True 
-@app.route("/")
+
+@app.route("/", methods=["GET"])
 def index():
     return render_template("index.html")
 
-
-@app.route("/readalong")
+@app.route("/readalong", methods=["GET"])
 def readalong():
     return render_template("readalong.html")
-
 
 @app.route("/gettoken", methods=["POST"])
 def gettoken():
@@ -56,7 +55,6 @@ def gettoken():
     response = requests.post(fetch_token_url, headers=headers)
     access_token = response.text
     return jsonify({"at": access_token})
-
 
 @app.route("/gettonguetwister", methods=["POST"])
 def gettonguetwister():
@@ -112,7 +110,6 @@ def getstory():
                 "story": stories[id],
             }
         )
-
 
 @app.route("/ackaud", methods=["POST"])
 def ackaud():
@@ -171,7 +168,6 @@ def ackaud():
 
     return response.json()
 
-
 @app.route("/gettts", methods=["POST"])
 def gettts():
     reftext = request.form.get("reftext")
@@ -217,7 +213,6 @@ def gettts():
         if cancellation_details.reason == speechsdk.CancellationReason.Error:
             print("Error details: {}".format(cancellation_details.error_details))
         return jsonify({"success": False})
-
 
 @app.route("/getttsforword", methods=["POST"])
 def getttsforword():
