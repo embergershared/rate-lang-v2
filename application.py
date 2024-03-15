@@ -26,10 +26,10 @@ tonguetwisters = [
         "Susie works in a shoeshine shop. Where she shines she sits, and where she sits she shines.",
         "Black background, brown background",
         "Blue blood, bad blood. Blue blood, bad blood. Blue blood, bad blood.",
-        "Red lorry, yellow lorry. Red lorry, yellow lorry. Red lorry, yellow lorry.",
         "I slit the sheet, the sheet I slit, and on the slitted sheet I sit",
     ]
 
+# Enable auto-reload for all templates
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 @app.route("/", methods=["GET"])
