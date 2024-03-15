@@ -52,7 +52,7 @@ var at;
 var hbutton = document.getElementById('buttonhear');
 var sbutton = document.getElementById('buttonsubmittext');
 var inputtext = document.getElementById('inputformtext');
-var speechToTextEvalText = "How is the weather today?";
+var speechToTextEvalText = "We love to go on a cruise.";
 var enteredText;
 var readText;
 var globallistenscore = document.getElementById('globallistenscore');
