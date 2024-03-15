@@ -24,28 +24,21 @@ tonguetwisters = [
         "Lesser leather never weathered wetter weather better.",
         "I scream, you scream, we all scream for ice cream.",
         "Susie works in a shoeshine shop. Where she shines she sits, and where she sits she shines.",
-        "Six sticky skeletons. Six sticky skeletons. Six sticky skeletons.",
-        "Black back bat. Black back bat. Black back bat.",
-        "She sees cheese. She sees cheese. She sees cheese.",
-        "Two tried and true tridents. Two tried and true tridents. Two tried and true tridents.",
-        "Thin sticks, thick bricks. Thin sticks, thick bricks. Thin sticks, thick bricks.",
-        "Truly rural. Truly rural. Truly rural.",
         "Black background, brown background",
         "Blue blood, bad blood. Blue blood, bad blood. Blue blood, bad blood.",
-        "Red lorry, yellow lorry. Red lorry, yellow lorry. Red lorry, yellow lorry.",
         "I slit the sheet, the sheet I slit, and on the slitted sheet I sit",
     ]
 
-app.config['TEMPLATES_AUTO_RELOAD'] = True 
-@app.route("/")
+# Enable auto-reload for all templates
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+
+@app.route("/", methods=["GET"])
 def index():
     return render_template("index.html")
 
-
-@app.route("/readalong")
+@app.route("/readalong", methods=["GET"])
 def readalong():
     return render_template("readalong.html")
-
 
 @app.route("/gettoken", methods=["POST"])
 def gettoken():
@@ -57,7 +50,6 @@ def gettoken():
     access_token = response.text
     return jsonify({"at": access_token})
 
-
 @app.route("/gettonguetwister", methods=["POST"])
 def gettonguetwister():
     return jsonify({"tt": random.choice(tonguetwisters)})
@@ -65,7 +57,7 @@ def gettonguetwister():
 @app.route("/gettonguetwisters", methods=["POST"])
 def gettonguetwisters():
     return jsonify(tonguetwisters)
-    
+
 @app.route("/getstory", methods=["POST"])
 def getstory():
     id = int(request.form.get("id"))
@@ -112,7 +104,6 @@ def getstory():
                 "story": stories[id],
             }
         )
-
 
 @app.route("/ackaud", methods=["POST"])
 def ackaud():
@@ -171,7 +162,6 @@ def ackaud():
 
     return response.json()
 
-
 @app.route("/gettts", methods=["POST"])
 def gettts():
     reftext = request.form.get("reftext")
@@ -217,7 +207,6 @@ def gettts():
         if cancellation_details.reason == speechsdk.CancellationReason.Error:
             print("Error details: {}".format(cancellation_details.error_details))
         return jsonify({"success": False})
-
 
 @app.route("/getttsforword", methods=["POST"])
 def getttsforword():
