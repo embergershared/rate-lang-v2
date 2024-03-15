@@ -404,6 +404,7 @@ function createDownloadLink(blob) {
 //function for onclick of Listen to the text button
 hbutton.onclick = function () {
   reftextval = speechToTextEvalText;
+  inputtext.value = "";
 
   if(reftextval != lastgettstext){
       document.getElementById("ttsloader").style.display = "block";
