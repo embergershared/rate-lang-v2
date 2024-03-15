@@ -1,4 +1,17 @@
 // Behind the scenes code for the index.html page
+var reftext = document.getElementById('reftext');
+var formcontainer = document.getElementById('formcontainer');
+var recordingsList = document.getElementById('recordingsList');
+var ttsList = document.getElementById('ttsList');
+var textOptionList = document.getElementById('text-select');
+var recordButton = document.getElementById('recordbutton');
+var spinner = document.getElementById('spinner');
+
+var lastgettstext;
+var objectUrlMain;
+var wordaudiourls = new Array;
+
+var globalspeakscore = document.getElementById('globalspeakscore');
 var accuracyscore = document.getElementById('accuracyscore');
 var fluencyscore = document.getElementById('fluencyscore');
 var completenessscore = document.getElementById('completenessscore');
@@ -11,19 +24,6 @@ var insertedwords = "";
 var wordrow = document.getElementById('wordrow');
 var phonemerow = document.getElementById('phonemerow');
 var scorerow = document.getElementById('scorerow');
-
-var reftext = document.getElementById('reftext');
-var formcontainer = document.getElementById('formcontainer');
-// var ttbutton = document.getElementById('randomtt');
-var hbutton = document.getElementById('buttonhear');
-var recordingsList = document.getElementById('recordingsList');
-var ttsList = document.getElementById('ttsList');
-var textOptionList = document.getElementById('text-select');
-var recordButton = document.getElementById('buttonmic');
-var spinner = document.getElementById('spinner');
-var lastgettstext;
-var objectUrlMain;
-var wordaudiourls = new Array;
 
 var phthreshold1 = 80;
 var phthreshold2 = 60;
@@ -47,6 +47,17 @@ var wordlist;
 var t0 = 0;
 var t1;
 var at;
+
+
+var hbutton = document.getElementById('buttonhear');
+var sbutton = document.getElementById('buttonsubmittext');
+var inputtext = document.getElementById('inputformtext');
+var speechToTextEvalText = "How is the weather today?";
+var enteredText;
+var readText;
+var globallistenscore = document.getElementById('globallistenscore');
+var listencomparison = document.getElementById('listenComparison');
+
 
 window.onload = async () => {
     if(tflag){
@@ -314,8 +325,17 @@ function fillDetails(words){
     }
 }
 
+function findAverage(arr) { 
+  let sum = 0; 
+  for (let i = 0; i < arr.length; i++) { 
+    sum += arr[i]; 
+  } 
+  return sum / arr.length; 
+} 
+
 function fillData(data){
     document.getElementById("summarytable").style.display = "flex";
+    globalspeakscore.innerText = findAverage([data.AccuracyScore, data.FluencyScore, data.CompletenessScore, parseInt(data.PronScore, 10)]).toFixed(2);
     accuracyscore.innerText = data.AccuracyScore;
     fluencyscore.innerText = data.FluencyScore;
     completenessscore.innerText = data.CompletenessScore;
@@ -359,6 +379,7 @@ function createDownloadLink(blob) {
         if(data.RecognitionStatus == "Success") {
             fillData(data.NBest[0]);
             document.getElementById("metrics").style.display = "block";
+            document.getElementById("globalSpeakScore").style.display = "block";
             spinner.style.display = "none";
         }
         else{
@@ -377,4 +398,86 @@ function createDownloadLink(blob) {
     request.send(data);
 
     return false;
+}
+
+// Listening evaluation code
+//function for onclick of Listen to the text button
+hbutton.onclick = function () {
+  reftextval = speechToTextEvalText;
+
+  if(reftextval != lastgettstext){
+      document.getElementById("ttsloader").style.display = "block";
+
+      var request = new XMLHttpRequest();
+      request.open('POST', '/gettts', true);
+      request.responseType = "blob";
+
+      // Callback function for when request completes
+      request.onload = () => {
+          var blobpronun = request.response;
+          var offsets = request.getResponseHeader("offsets");
+          offsetsarr = offsets.substring(1,offsets.length - 1).replace(/ /g, "").split(',').map(Number);;
+
+          objectUrlMain = URL.createObjectURL(blobpronun);
+
+          var au = document.createElement('audio');
+          var li = document.createElement('p');
+
+          //add controls to the <audio> element
+          au.controls = true;
+          au.autoplay = true;
+          au.id = "ttsaudio"
+          au.src = objectUrlMain;
+
+          //add the new audio element to li
+          li.appendChild(au);
+
+          //add the li element to the ol
+
+          if(ttsList.hasChildNodes()){
+              ttsList.lastChild.remove();
+          }
+
+          ttsList.appendChild(li);
+
+          document.getElementById("ttsloader").style.display = "none";
+      }
+      const dat = new FormData();
+      dat.append("reftext",reftextval);
+
+      //send request
+      request.send(dat);
+
+      lastgettstext = reftextval;
+
+      wordlist = reftextval.split(" ");
+      for (var i = 0; i < wordlist.length; i++) {
+          getttsforword(wordlist[i]);
+      }
+  }
+  else{
+      console.log("TTS Audio for given text already exists. You may change ref text");
+  }
+
+  return false;
+}
+
+//function for onclick of Submit your text button
+sbutton.onclick = function () {
+  console.log("Submit button clicked.");
+  enteredText = inputtext.value;
+  readText = speechToTextEvalText;
+
+  document.getElementById("listenwrote").innerText = enteredText;
+  document.getElementById("listenexpected").innerText = readText;
+  listencomparison.style.display = "block";
+
+  if(enteredText == readText){
+      globallistenscore.innerText = "That was the sentence"
+      globallistenscore.style.backgroundColor = "lightgreen";
+    } else {
+      globallistenscore.innerText = "That was not the sentence"
+      globallistenscore.style.backgroundColor = "orange";
+  }
+  document.getElementById("globalListenScore").style.display = "block";
 }
